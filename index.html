@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Add the Bootstrap CSS file -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    tbody button {
+      border-radius: 100%;
+      padding: 10px;
+      padding-left: 15px;
+      padding-right: 15px;
+      align-content: center;
+      color: white;
+    }
+    /* Custom CSS to style the header and navbar */
+.container {
+  position: relative;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  background-color: #fff; 
+  
+}
+
+.table {
+  margin-top: 60px; 
+}
+
+  </style>
+  <title>Attendance Management System</title>
+</head>
+<body>
+  <div class="container">
+    <nav class="container navbar navbar-light bg-light fixed-top">
+      <input type="date" class="btn btn-outline-success" id="dateInput">
+      <button class="btn btn-outline-success" id="saveBtn" type="button">Save</button>
+      <button class="btn btn-outline-success" type="button" onclick="copyToClipboard()" onclick="saved()">Copy</button>
+      <button class="btn btn-outline-success" type="button" id="resetBtn">Reset</button>
+    </nav>
+    <table class="table table-striped">
+      <thead >
+        <tr>
+          <th scope="col">Roll no</th>
+          <th scope="col">Name</th>
+          <th scope="col">Attendance</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <!-- Data will be added dynamically using JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add the required jQuery, Popper.js, and Bootstrap JS files -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <script>
+    // Your existing buttonclick function remains the same.
+    // ...
+    document.addEventListener('DOMContentLoaded', function () {
+  const dateInput = document.getElementById('dateInput');
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const currentDate = `${year}-${month}-${day}`;
+  dateInput.value = currentDate;
+});
+    
+    function copyToClipboard() {
+      const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const currentDate = `${day}-${month}-${year}`;
+  const date = currentDate;
+  const ondutyData = [];
+  const presentData = [];
+  const absentData = [];
+
+  // Collect attendance data from the table
+  const rows = document.querySelectorAll('tbody tr');
+  rows.forEach((row) => {
+    const rollno = row.querySelector('th').textContent;
+    const name = row.querySelector('td').textContent;
+    const attendanceButton = row.querySelector('button');
+    const status = attendanceButton.textContent;
+
+    if (status === 'P') {
+      presentData.push(name);
+    } else if (status === 'O') {
+      ondutyData.push(name);
+    } else if (status === 'A') {
+      absentData.push(name);
+    }
+  });
+
+  // Format attendance data into a string
+  let formattedAttendance = `4th year CSE "D" Section Attendance Sir\nDate: ${date}\n\n`;
+
+  // Add the total count for each category at the end
+  formattedAttendance += formatTotalCount('Onduty', ondutyData.length);
+  formattedAttendance += formatTotalCount('Absent', absentData.length);
+  formattedAttendance += formatTotalCount('Present', presentData.length);
+
+  formattedAttendance += formatCategoryData('\nOnduty', ondutyData);
+  formattedAttendance += formatCategoryData('Absent', absentData);
+  
+
+  // Copy to clipboard
+  const textarea = document.createElement('textarea');
+  textarea.value = formattedAttendance.trim();
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+
+  alert('Attendance data copied to clipboard!');
+}
+
+function formatTotalCount(category, count) {
+  return `Total ${category} : ${count}\n`;
+}
+
+function formatCategoryData(category, names) {
+  let formattedCategory = `${category}:\n`;
+  names.forEach((name, index) => {
+    const sNo = index + 1;
+    formattedCategory += `${sNo}. ${name}\n`;
+  });
+  formattedCategory += '\n';
+  return formattedCategory;
+}
+
+
+    // ... (Your existing code for loading data remains unchanged) ...
+  </script>
+  <script >
+    // Add this code to set the current date automatically
+
+
+    let   parsedData = [
+  {
+   "rollno": 1,
+   "Name": "Sedhuragavan M",
+   "attendance": "p"
+  },
+  {
+   "rollno": 2,
+   "Name": "Shalini K",
+   "attendance": "p"
+  },
+  {
+   "rollno": 3,
+   "Name": "Shankar P",
+   "attendance": "p"
+  },
+  {
+   "rollno": 4,
+   "Name": "Sharmi B",
+   "attendance": "p"
+  },
+  {
+   "rollno": 5,
+   "Name": "Shreedharan S",
+   "attendance": "p"
+  },
+  {
+   "rollno": 6,
+   "Name": "Shrilekha V",
+   "attendance": "p"
+  },
+  {
+   "rollno": 7,
+   "Name": "Sibivignesh B",
+   "attendance": "p"
+  },
+  {
+   "rollno": 8,
+   "Name": "Sneha T",
+   "attendance": "p"
+  },
+  {
+   "rollno": 9,
+   "Name": "Sooraj M",
+   "attendance": "p"
+  },
+  {
+   "rollno": 10,
+   "Name": "Soundarya S",
+   "attendance": "p"
+  },
+  {
+   "rollno": 11,
+   "Name": "Sri Arthi R",
+   "attendance": "p"
+  },
+  {
+   "rollno": 12,
+   "Name": "Sripauldaniel L",
+   "attendance": "p"
+  },
+  {
+   "rollno": 13,
+   "Name": "Sridevi M",
+   "attendance": "p"
+  },
+  {
+   "rollno": 14,
+   "Name": "Sridharshini C",
+   "attendance": "p"
+  },
+  {
+   "rollno": 15,
+   "Name": "Srikanth V",
+   "attendance": "p"
+  },
+  {
+   "rollno": 16,
+   "Name": "Srikar P",
+   "attendance": "p"
+  },
+  {
+   "rollno": 17,
+   "Name": "Srimathi S",
+   "attendance": "p"
+  },
+  {
+   "rollno": 18,
+   "Name": "Subhiksha U",
+   "attendance": "p"
+  },
+  {
+   "rollno": 19,
+   "Name": "Sudha P",
+   "attendance": "p"
+  },
+  {
+   "rollno": 20,
+   "Name": "Sudharshan C",
+   "attendance": "p"
+  },
+  {
+   "rollno": 21,
+   "Name": "Suhaib I",
+   "attendance": "p"
+  },
+  {
+   "rollno": 22,
+   "Name": "Sundhar A",
+   "attendance": "p"
+  },
+  {
+   "rollno": 23,
+   "Name": "Sundhar S",
+   "attendance": "p"
+  },
+  {
+   "rollno": 24,
+   "Name": "Swathi S",
+   "attendance": "p"
+  },
+  {
+   "rollno": 25,
+   "Name": "Swetha V",
+   "attendance": "p"
+  },
+  {
+   "rollno": 26,
+   "Name": "Swethaa SP",
+   "attendance": "p"
+  },
+  {
+   "rollno": 27,
+   "Name": "Tharun kumar P",
+   "attendance": "p"
+  },
+  {
+   "rollno": 28,
+   "Name": "Tharun PV",
+   "attendance": "p"
+  },
+  {
+   "rollno": 29,
+   "Name": "Thirukumara D",
+   "attendance": "p"
+  },
+  {
+   "rollno": 30,
+   "Name": "Thrisha T",
+   "attendance": "p"
+  },
+  {
+   "rollno": 31,
+   "Name": "Vaishnavi G",
+   "attendance": "p"
+  },
+  {
+   "rollno": 32,
+   "Name": "Varsha G",
+   "attendance": "p"
+  },
+  {
+   "rollno": 33,
+   "Name": "Varshini L",
+   "attendance": "p"
+  },
+  {
+   "rollno": 34,
+   "Name": "Varshini M",
+   "attendance": "p"
+  },
+  {
+   "rollno": 35,
+   "Name": "Varshitha SR",
+   "attendance": "p"
+  },
+  {
+   "rollno": 36,
+   "Name": "Vasudevan G",
+   "attendance": "p"
+  },
+  {
+   "rollno": 37,
+   "Name": "Vijay U",
+   "attendance": "p"
+  },
+  {
+   "rollno": 38,
+   "Name": "VisnuYaathav SS",
+   "attendance": "p"
+  },
+  {
+   "rollno": 39,
+   "Name": "Yagavi A",
+   "attendance": "p"
+  },
+  {
+   "rollno": 40,
+   "Name": "Yokesh kumar R",
+   "attendance": "p"
+  },
+  {
+   "rollno": 41,
+   "Name": "Yuvaraj U",
+   "attendance": "p"
+  },
+  {
+   "rollno": 42,
+   "Name": "Sanjayraj GM",
+   "attendance": "p"
+  },
+  {
+   "rollno": 43,
+   "Name": "Saran kumar JD",
+   "attendance": "p"
+  },
+  {
+   "rollno": 44,
+   "Name": "Sutharsun M",
+   "attendance": "p"
+  },
+  {
+   "rollno": 45,
+   "Name": "Vijay L",
+   "attendance": "p"
+  },
+  {
+   "rollno": 46,
+   "Name": "Yuvas S",
+   "attendance": "p"
+  }
+ ];
+
+function buttonclick(ids)
+{
+  if(document.getElementById(ids).value=="p")
+  {
+    document.getElementById(ids).value="o";
+    document.getElementById(ids).textContent ="O"
+    document.getElementById(ids).style.background="blue";
+    document.getElementById(ids).style.color="white";
+  }
+  else if(document.getElementById(ids).value=="o")
+  {
+    document.getElementById(ids).value="a"
+    document.getElementById(ids).textContent ="A"
+    document.getElementById(ids).style.background="red";
+    document.getElementById(ids).style.color="white";
+    
+  }
+  else if(document.getElementById(ids).value=="a")
+  {
+    document.getElementById(ids).value="p"
+    document.getElementById(ids).textContent ="P"
+    document.getElementById(ids).style.color="white";
+    document.getElementById(ids).style.background="green";
+  }
+}
+
+
+
+const storedData = localStorage.getItem('userData');
+// If userData is not present in local storage, set the initial data and save it
+if (!storedData) {
+
+
+  // Save the initial data to local storage
+  const initialDataJSON = JSON.stringify(parsedData);
+  localStorage.setItem('userData', initialDataJSON);
+  loadda();
+  
+}
+else{
+  loadda();
+}
+function loadda()
+{
+  const storedData = localStorage.getItem('userData');
+const parsedData = JSON.parse(storedData);
+for (const obj of parsedData) {
+  const idss="n"+obj.rollno
+  const msgHTML = `
+<tr>
+<th scope="row">${obj.rollno}</th>
+<td>${(obj.Name)}</td>
+<td><button onclick=buttonclick("n${obj.rollno}") id="n${obj.rollno}" value="${obj.attendance}">${obj.attendance.toUpperCase()}</button></td>
+</tr>
+  `;
+  document.getElementById("tbody").insertAdjacentHTML("beforeend", msgHTML);
+if(obj.attendance=="p")
+{
+  document.getElementById(idss).style.background="green";
+}
+else if(obj.attendance=="o")
+{
+  console.log(idss)
+  document.getElementById(idss).style.background="blue";
+}
+else if(obj.attendance=="a")
+{
+  document.getElementById(idss).style.background="red";
+}
+  
+}
+}
+
+document.getElementById('saveBtn').addEventListener('click', saveData);
+
+function saveData() {
+  const updatedData = [];
+
+  // Collect updated attendance data from the table
+  const rows = document.querySelectorAll('tbody tr');
+  rows.forEach((row) => {
+    const rollno = parseInt(row.querySelector('th').textContent, 10);
+    const name = row.querySelector('td').textContent;
+    const attendanceButton = row.querySelector('button');
+    const status = attendanceButton.textContent;
+
+    // Create an object with the updated data
+    const updatedObj = {
+      "rollno": rollno,
+      "Name": name,
+      "attendance": status.toLowerCase() // Convert status to lowercase ("P", "O", "A" => "p", "o", "a")
+    };
+
+    updatedData.push(updatedObj);
+  });
+
+  // Update the local storage data with the updatedData
+  const updatedDataJSON = JSON.stringify(updatedData);
+  localStorage.setItem('userData', updatedDataJSON);
+
+  alert('Attendance data saved successfully!');
+}
+
+document.getElementById('resetBtn').addEventListener('click', resetData);
+function resetData() {
+  const initialDataJSON = JSON.stringify(parsedData);
+  localStorage.setItem('userData', initialDataJSON);
+  alert('Attendance data reset successfully!');
+
+  // Clear the existing table content
+  document.getElementById('tbody').innerHTML = '';
+
+  // Reload the data after resetting
+  loadda();
+}
+
+
+
+  </script>
+</body>
+</html>
